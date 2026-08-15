@@ -88,6 +88,12 @@ a {
   margin: 0.25rem 0;
 }
 
+.chord-info .feel {
+  margin: 0.5rem 0 0;
+  color: #333;
+  max-width: 30rem;
+}
+
 @media (width <= 480px) {
   .piano {
     height: 6rem;

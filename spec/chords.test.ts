@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { initApp } from "../src/scripts/app";
 
 describe("chord explainer: core interaction", () => {
@@ -8,6 +8,10 @@ describe("chord explainer: core interaction", () => {
     root = document.createElement("div");
     document.body.appendChild(root);
     initApp(root);
+  });
+
+  afterEach(() => {
+    root.remove();
   });
 
   it("selecting a chord highlights its notes and shows its function", () => {

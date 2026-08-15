@@ -6,7 +6,7 @@ export function initApp(root: HTMLElement): void {
     <div class="key-selector" role="group" aria-label="Choose a key"></div>
     <div class="chord-selector" role="group" aria-label="Choose a chord"></div>
     <div class="piano-container"></div>
-    <div class="chord-info">
+    <div class="chord-info" aria-live="polite">
       <p class="roman"></p>
       <p class="name"></p>
       <p class="feel"></p>
@@ -25,13 +25,14 @@ export function initApp(root: HTMLElement): void {
   let currentKey = 0;
   let currentChords: Chord[] = [];
 
-  function renderKeySelector(): void {
+  function buildKeySelector(): void {
     keySelector.innerHTML = "";
     NOTE_NAMES.forEach((name, pitch) => {
       const btn = document.createElement("button");
       btn.type = "button";
       btn.textContent = name;
       btn.classList.toggle("active", pitch === currentKey);
+      btn.setAttribute("aria-pressed", pitch === currentKey ? "true" : "false");
       btn.addEventListener("click", () => selectKey(pitch));
       keySelector.appendChild(btn);
     });
@@ -51,7 +52,10 @@ export function initApp(root: HTMLElement): void {
   function selectKey(pitch: number): void {
     currentKey = pitch;
     currentChords = diatonicTriads(currentKey);
-    renderKeySelector();
+    Array.from(keySelector.children).forEach((el, i) => {
+      el.classList.toggle("active", i === pitch);
+      el.setAttribute("aria-pressed", i === pitch ? "true" : "false");
+    });
     renderChordSelector();
     selectChord(0);
   }
@@ -60,6 +64,7 @@ export function initApp(root: HTMLElement): void {
     const chord = currentChords[index];
     Array.from(chordSelector.children).forEach((el, i) => {
       el.classList.toggle("active", i === index);
+      el.setAttribute("aria-pressed", i === index ? "true" : "false");
     });
     piano.highlight(chord.notes);
     romanEl.textContent = chord.romanNumeral;
@@ -67,6 +72,7 @@ export function initApp(root: HTMLElement): void {
     feelEl.textContent = chord.feel;
   }
 
+  buildKeySelector();
   selectKey(currentKey);
 }
 
