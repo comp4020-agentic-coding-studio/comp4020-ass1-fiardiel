@@ -8,6 +8,7 @@ export interface Chord {
   notes: PitchClass[];
   romanNumeral: string;
   name: string;
+  hint: string;
   feel: string;
 }
 
@@ -23,14 +24,24 @@ const DEGREE_QUALITIES: Quality[] = [
 
 const ROMAN_NUMERALS = ["I", "ii", "iii", "IV", "V", "vi", "vii°"];
 
+const HINTS = [
+  "Home",
+  "Gentle motion",
+  "Wistful, unstable",
+  "Subdominant",
+  "Dominant, tension",
+  "Relative minor",
+  "Restless, unstable",
+];
+
 const FEELS = [
-  "Home. Where the tension resolves.",
-  "A gentle passing chord, softly minor.",
-  "Wistful and unstable — rarely lingers long.",
-  "Subdominant — steps away from home without leaving it.",
-  "Dominant — the pull, the tension that wants to resolve home.",
-  "The relative minor — home's melancholy twin.",
-  "Diminished and restless — leans hard back toward home.",
+  "Home — the tonic itself, where every tension in the key wants to resolve. Every other chord here is defined by its distance from this one.",
+  "A step above home, gently minor — it shares two notes with I, so it rarely feels like a destination, more a quiet stepping stone toward IV or V.",
+  "A third above home, minor and unstable — it shares two notes with I and two with V, so it rarely settles anywhere for long.",
+  "Subdominant — a fourth above home, the first real step away from the tonic. It sets up tension without creating it outright, often leading toward V.",
+  "Dominant — a fifth above home, the note farthest from the tonic in the cycle of fifths. It creates the strongest pull back to I, the tension that makes arriving home feel earned.",
+  "The relative minor — a sixth above home, sharing every note with I but cast in a minor light. Home's melancholy twin, often standing in when a phrase wants to feel unresolved.",
+  "Diminished — a seventh above home, built from two stacked minor thirds with no perfect fifth to stabilize it. It leans hard back toward I, rarely lingering.",
 ];
 
 const TRIAD_INTERVALS: Record<Quality, number[]> = {
@@ -50,6 +61,7 @@ export function diatonicTriads(keyRoot: PitchClass): Chord[] {
       notes,
       romanNumeral: ROMAN_NUMERALS[i],
       name: `${NOTE_NAMES[root]} ${quality}`,
+      hint: HINTS[i],
       feel: FEELS[i],
     };
   });

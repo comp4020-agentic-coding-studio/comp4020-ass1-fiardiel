@@ -3,12 +3,19 @@ import { renderPiano } from "../lib/piano";
 
 export function initApp(root: HTMLElement): void {
   root.innerHTML = `
-    <div class="key-selector" role="group" aria-label="Choose a key"></div>
-    <div class="chord-selector" role="group" aria-label="Choose a chord"></div>
+    <section class="selector-group">
+      <h2 id="key-heading">Key</h2>
+      <div class="key-selector" role="group" aria-labelledby="key-heading"></div>
+    </section>
+    <section class="selector-group">
+      <h2 id="chord-heading">Chord</h2>
+      <div class="chord-selector" role="group" aria-labelledby="chord-heading"></div>
+    </section>
     <div class="piano-container"></div>
     <div class="chord-info" aria-live="polite">
       <p class="roman"></p>
       <p class="name"></p>
+      <p class="notes"></p>
       <p class="feel"></p>
     </div>
   `;
@@ -18,6 +25,7 @@ export function initApp(root: HTMLElement): void {
   const pianoContainer = root.querySelector<HTMLElement>(".piano-container")!;
   const romanEl = root.querySelector<HTMLElement>(".roman")!;
   const nameEl = root.querySelector<HTMLElement>(".name")!;
+  const notesEl = root.querySelector<HTMLElement>(".notes")!;
   const feelEl = root.querySelector<HTMLElement>(".feel")!;
 
   const piano = renderPiano(pianoContainer);
@@ -44,6 +52,7 @@ export function initApp(root: HTMLElement): void {
       const btn = document.createElement("button");
       btn.type = "button";
       btn.textContent = chord.romanNumeral;
+      btn.title = `${chord.romanNumeral} — ${chord.hint}`;
       btn.addEventListener("click", () => selectChord(i));
       chordSelector.appendChild(btn);
     });
@@ -69,6 +78,7 @@ export function initApp(root: HTMLElement): void {
     piano.highlight(chord.notes);
     romanEl.textContent = chord.romanNumeral;
     nameEl.textContent = chord.name;
+    notesEl.textContent = chord.notes.map((pitch) => NOTE_NAMES[pitch]).join(", ");
     feelEl.textContent = chord.feel;
   }
 
