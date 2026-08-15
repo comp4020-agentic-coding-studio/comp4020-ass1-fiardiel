@@ -2,19 +2,19 @@
 import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout title="COMP4020 prototype">
+<Layout title="Chords in context">
   <header>
     <nav aria-label="Primary">
       <a href="./">Home</a>
     </nav>
   </header>
   <main>
-    <h1>COMP4020 prototype</h1>
-    <p data-testid="intro">
-      Replace this with your prototype. This week's brief is on the course
-      website; <code>spec/README.md</code> explains how the checks in this repo
-      relate to it.
+    <h1>Chords in context</h1>
+    <p>
+      Pick a key, then a chord. See which notes it uses, and what it does —
+      home, tension, or somewhere in between.
     </p>
+    <div id="app"></div>
   </main>
-  <script src="../scripts/main.ts"></script>
+  <script src="../scripts/app.ts"></script>
 </Layout>
