@@ -14,3 +14,82 @@ main {
 a {
   color: #0b5fff;
 }
+
+.key-selector,
+.chord-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.key-selector button,
+.chord-selector button {
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.key-selector button.active,
+.chord-selector button.active {
+  background: #0b5fff;
+  color: #fff;
+  border-color: #0b5fff;
+}
+
+.piano-container {
+  margin: 1.5rem 0;
+}
+
+.piano {
+  position: relative;
+  width: 100%;
+  max-width: 28rem;
+  height: 8rem;
+}
+
+.piano-key {
+  position: absolute;
+  top: 0;
+  box-sizing: border-box;
+}
+
+.piano-key.white {
+  height: 100%;
+  background: #fff;
+  border: 1px solid #333;
+}
+
+.piano-key.black {
+  height: 60%;
+  background: #222;
+  z-index: 2;
+}
+
+.piano-key.active {
+  background: #ffd54f;
+}
+
+.chord-info {
+  margin-top: 1rem;
+}
+
+.chord-info .roman {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.chord-info .name {
+  color: #555;
+  margin: 0.25rem 0;
+}
+
+@media (width <= 480px) {
+  .piano {
+    height: 6rem;
+  }
+}
