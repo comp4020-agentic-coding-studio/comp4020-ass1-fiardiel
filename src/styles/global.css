@@ -18,6 +18,11 @@ body {
   line-height: 1.6;
   color: var(--ink);
   background: var(--bg);
+
+  /* The sheet-music watermark is deliberately wider than the viewport (for
+     the panning effect), and nothing was clipping that overflow — it was
+     making the whole page scrollable sideways, worst on narrow phones. */
+  overflow-x: hidden;
 }
 
 main {
