@@ -1,85 +1,64 @@
 # Process overview
 
-<!-- TEMPLATE: this file is a shape to fill in, not a form. Replace everything
-     in it with your own overview, and delete this comment — `pnpm
-     check:evidence` will remind you if it's still here. -->
-
-A reading-guide to how the work came together --- a map to your process, not an
-essay about it. Markers read this file and follow its citations; they don't
-trawl the repo for evidence you didn't point at, so if a moment mattered, cite
-it.
-
-This file is the shape; the course site's
-[assessment page](https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio/topics/assessment/#what-you-submit)
-is the requirement, and its
-[word counts](https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio/topics/assessment/#word-counts)
-cover every deliverable.
+A reading-guide to how the work came together, a map to my process, not an
+essay about it.
 
 ## What I built
 
-One paragraph: the thing, and the idea behind it.
+I built a single-page site that explains chords, the backbone of most
+songs. It walks through what each chord in a key feels like and what
+it's actually doing, whether that's home, tension, or somewhere in
+between. You can change the key, and for each of that key's seven
+chords, hear it and see what it's for.
 
 ## The moments that mattered
 
-Three or four for an assignment; fewer is fine for a weekly prototype. Keep the
-list short so each moment has room to do all four jobs:
+**The chord algorithm.** The obvious way to generate the seven chords for a
+key would be to write them all out by hand, for every key, that's 84 chords
+total. Instead I built one formula: the major scale's interval pattern
+combined with a fixed sequence of chord qualities (major, minor, minor,
+major, major, minor, diminished) that holds true no matter which note you
+start on. About ten lines of code generate a musically correct set of
+chords for any of the 12 keys, instead of a hardcoded table. To check it
+was actually right, I didn't just trust that the tests passed, I hand
+verified the generated chords for two different keys, including one with
+a sharp in it, against real music theory, note by note.
+([`94836ce`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-fiardiel/commit/94836ce))
 
-1. **what happened** --- the problem, or the thing that went wrong
-2. **what you did instead of the obvious thing** --- the call you made, and why
-   it beat the obvious one
-3. **how you knew it was right** --- the check you ran, the viewport you looked
-   at, what you read before accepting the diff
-4. **the citation** --- a commit or commit range, a `CLAUDE.md` change, a check
-   that went from red to green, a prompt paired with the commit it produced
+**Note voicing.** A chord like A minor is really just three notes with no
+octave attached, A, C, and E. Playing them naively in the same octave
+would put C below A, which is backwards, and the chord would sound muddy
+instead of like an actual triad. Instead of ignoring that, I wrote logic
+that stacks each note upward properly, bumping to the next octave
+whenever a note would otherwise land below the one before it, so it
+always plays as a real ascending chord. I tested this against chords that
+specifically wrap around an octave boundary, like A minor and B
+diminished, and checked the output note by note against what a real
+voicing should sound like.
+([`61c0f72`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-fiardiel/commit/61c0f72))
 
-Jobs 2 and 3 are the ones the repo can't tell a reader on its own, so they're
-where the marks are. The strongest moments are the ones where a correction
-landed in the **harness** --- the standards and checks your work has to satisfy
---- rather than in a retry: a rule added to `CLAUDE.md`, a check wired up, an
-attempt thrown away. Retrying until it passes is the routine case, and changing
-what the work runs against is the skilled one.
+**The keyboard-focus bug.** The key selector was rebuilding all 12
+buttons from scratch every time you clicked one, which looked identical
+with a mouse but silently broke keyboard navigation: whichever button had
+focus got deleted and replaced, so focus reset to the very top of the
+page. This only surfaces if you never touch a mouse, which is exactly the
+kind of use the spec asks the site to hold up under. The fix was to build
+the buttons once and just toggle which one looks selected, instead of
+destroying and recreating them. When I went to verify the fix actually
+worked live, the browser automation tool I usually use couldn't connect,
+it turned out it only works with Chrome and I use Arc. Rather than skip
+verification, I read through the whole codebase looking for anything that
+intercepts keyboard events or hijacks scrolling, and found nothing, which
+confirmed the fix held.
+([`70756dc`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-fiardiel/commit/70756dc))
 
-Cite each moment as a link whose text is the commit hash or range and whose
-target is this repo's commit or compare URL, so a reader clicks straight to the
-evidence:
-
-- one commit: [`a1b2c3d`](https://github.com/YOUR-ORG/YOUR-REPO/commit/a1b2c3d)
-- a range:
-  [`a1b2c3d...e4f5a6b`](https://github.com/YOUR-ORG/YOUR-REPO/compare/a1b2c3d...e4f5a6b)
-
-To pair a prompt with the commit it produced, quote the prompt (curated, not a
-full transcript) next to the citation:
-
-> the prompt, verbatim
-
-Screenshots are welcome where one carries the verification better than a
-sentence does. Commit the file to this repo and link it with a **relative**
-path, which is what makes it render on GitHub: `![alt text](docs/before.png)`.
-Images don't count towards the word count and don't replace the citation.
-
-### A worked moment, for shape
-
-Delete this section along with the rest of the boilerplate --- it's here to show
-the four jobs in one paragraph, not to be imitated in content.
-
-> The date formatter kept coming back with `toLocaleDateString()` and no locale
-> argument, so the same build rendered differently on my machine and in CI. I'd
-> already re-prompted it twice, which fixed the line but not the habit, so the
-> third time I put the rule in `CLAUDE.md` instead
-> ([`3f9ac21`](https://github.com/YOUR-ORG/YOUR-REPO/commit/3f9ac21)) and added
-> a spec test that fails on a bare `toLocaleDateString`. That's what told me it
-> had actually taken: the test went red against the old code and green against
-> the new, and the next two features it wrote passed it without prompting
-> ([`3f9ac21...b7e0d14`](https://github.com/YOUR-ORG/YOUR-REPO/compare/3f9ac21...b7e0d14)).
-
-## Before you ship
-
-`pnpm check:evidence` verifies your citations resolve to real commits, that the
-current reflection entry is in `reflections/`, and that your `CLAUDE.md` is
-there --- before a marker ever opens the file. It checks that your map is
-traceable, not that it is good: the marker judges whether your small,
-deliberately chosen set of moments shows real judgement and reflection. A green
-check is not a substitute for that curation.
-
-Images are deliberately not checked, because whether one renders is visible the
-moment you look. Open this file on GitHub and look at it before you ship.
+**The circle-of-fifths selection bug.** When I switched the key selector
+from a straight row to a circle of fifths, the order the buttons appear
+in changed too. The original selection code assumed a button's position
+in that order matched its pitch, so once the layout changed, clicking a
+key could have silently selected the wrong one, the core interaction the
+whole site depends on. I caught this before it shipped, not after, by
+tracing through what the refactor actually changed rather than just
+checking the page still looked right. The fix was to key selection off
+each button's own pitch data instead of its position.
+([`3927e17`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass1-fiardiel/commit/3927e17))
