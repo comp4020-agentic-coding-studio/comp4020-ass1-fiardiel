@@ -1,20 +1,182 @@
 ---
 import Layout from "../layouts/Layout.astro";
+
+// A background watermark: a stretch of sheet music (5 staff lines, a
+// scatter of notes) that pans sideways as the visitor scrolls. Universally
+// recognizable as "music" without needing any theory knowledge, unlike a
+// circle of fifths. Hand-placed, not generated — a real staff isn't a
+// formula, and the slightly uneven spacing reads more like music than a
+// grid would.
+const STAFF_LINES = [45, 67.5, 90, 112.5, 135];
+const STAFF_NOTES = [
+  { x: 30, y: 135 },
+  { x: 70, y: 112.5 },
+  { x: 110, y: 78.75 },
+  { x: 150, y: 90 },
+  { x: 190, y: 56.25 },
+  { x: 230, y: 67.5 },
+  { x: 270, y: 123.75 },
+  { x: 310, y: 101.25 },
+  { x: 350, y: 45 },
+  { x: 390, y: 78.75 },
+  { x: 430, y: 112.5 },
+  { x: 470, y: 90 },
+  { x: 510, y: 67.5 },
+  { x: 550, y: 56.25 },
+  { x: 590, y: 123.75 },
+  { x: 630, y: 101.25 },
+  { x: 670, y: 45 },
+  { x: 710, y: 78.75 },
+  { x: 750, y: 112.5 },
+  { x: 790, y: 90 },
+  { x: 830, y: 67.5 },
+  { x: 870, y: 56.25 },
+].map((note) => ({
+  ...note,
+  // Real notation convention: stems point down from notes above the
+  // middle line, up from notes below it.
+  stemUp: note.y > 90,
+}));
 ---
 
-<Layout title="Chords in context">
+<Layout title="Seven Chords">
   <header>
     <nav aria-label="Primary">
-      <a href="./">Home</a>
+      <p class="nav-brand">Seven Chords</p>
     </nav>
   </header>
   <main>
+    <section class="hook" aria-label="Introduction">
+      <div class="hook-bg" aria-hidden="true">
+        <svg class="hook-bg-inner" viewBox="0 0 900 180">
+          {
+            STAFF_LINES.map((y) => (
+              <line x1="0" y1={y} x2="900" y2={y} class="hook-bg-staff" />
+            ))
+          }
+          {
+            STAFF_NOTES.map((note) => (
+              <g class="hook-bg-note">
+                <ellipse
+                  cx={note.x}
+                  cy={note.y}
+                  rx="10.5"
+                  ry="8.25"
+                  transform={`rotate(-15 ${note.x} ${note.y})`}
+                />
+                <line
+                  x1={note.stemUp ? note.x + 9.75 : note.x - 9.75}
+                  y1={note.y}
+                  x2={note.stemUp ? note.x + 9.75 : note.x - 9.75}
+                  y2={note.stemUp ? note.y - 30 : note.y + 30}
+                />
+              </g>
+            ))
+          }
+        </svg>
+      </div>
+      <div class="hook-slide">
+        <div class="hook-content">
+          <p class="hook-eyebrow">Question time</p>
+          <p class="hook-line">What's the one thing you never go a day without?</p>
+        </div>
+      </div>
+      <div class="hook-slide alt">
+        <div class="hook-content">
+          <p class="hook-eyebrow">For me,</p>
+          <p class="hook-line">It's music.</p>
+          <p class="hook-sub">
+            It's in ads, elevators, workouts, breakups — background noise
+            nobody thinks about.
+          </p>
+        </div>
+      </div>
+      <div class="hook-slide">
+        <div class="hook-content">
+          <p class="hook-eyebrow">And here's the thing —</p>
+          <p class="hook-line">You already know this.</p>
+          <p class="hook-sub">
+            You've felt a chord pull toward home a thousand times. You
+            just never had the words for why.
+          </p>
+        </div>
+      </div>
+      <div class="hook-slide alt">
+        <div class="hook-content">
+          <p class="hook-eyebrow">So</p>
+          <p class="hook-line">Here are the words.</p>
+          <p class="hook-sub">Scroll on.</p>
+        </div>
+      </div>
+    </section>
+
     <h1>Chords in context</h1>
-    <p>
-      Pick a key, then a chord. See which notes it uses, and what it does —
-      home, tension, or somewhere in between.
-    </p>
+
+    <section class="intro" aria-label="A guided chord progression">
+      <div class="intro-sticky">
+        <div class="piano-container intro-piano"></div>
+        <p class="intro-caption" aria-live="polite"></p>
+        <button class="play-chord intro-play" type="button">▶ Play chord</button>
+      </div>
+      <div class="intro-steps">
+        <div class="intro-step" data-degree="0">
+          <p>
+            This is <strong>I</strong> — home, C major. Everything else in
+            the key is defined by its distance from this one.
+          </p>
+        </div>
+        <div class="intro-step" data-degree="4">
+          <p>
+            Jump to <strong>V</strong> — G major, the dominant. This is
+            tension: the chord built on the note farthest from home,
+            pulling hard to resolve.
+          </p>
+        </div>
+        <div class="intro-step" data-degree="5">
+          <p>
+            <strong>vi</strong> — A minor, the relative minor. It shares
+            every note with I, but casts them in a minor light — home's
+            melancholy twin.
+          </p>
+        </div>
+        <div class="intro-step" data-degree="3">
+          <p>
+            <strong>IV</strong> — F major, the subdominant. A step away
+            from home, setting up one more return.
+          </p>
+        </div>
+        <div class="intro-step" data-degree="0">
+          <p>
+            And back to <strong>I</strong>. This exact progression —
+            I, V, vi, IV — is behind more pop songs than any other four
+            chords in music. Once you hear it, you can't unhear it.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bridge" aria-label="From one key to every key">
+      <p>
+        Every one of those roles — home, tension, the relative minor —
+        exists in any key, not just C. The same I–V–vi–IV shape works
+        everywhere; only the actual notes change.
+      </p>
+      <p>
+        Some keys are close neighbors. Step from C to G and six of the
+        seven notes stay the same — only one shifts. Keep stepping and you
+        eventually reach F♯, sharing almost nothing with C at all.
+      </p>
+      <p>
+        Arrange every key by that closeness and they fall into a circle —
+        neighbors on the wheel sound like each other. That's the map
+        below: pick a key, and explore all seven of its chords, including
+        the three you haven't heard yet.
+      </p>
+    </section>
+
     <div id="app"></div>
   </main>
+  <script src="../scripts/parallax.ts"></script>
+  <script src="../scripts/intro.ts"></script>
   <script src="../scripts/app.ts"></script>
 </Layout>

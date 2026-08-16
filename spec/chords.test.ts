@@ -37,7 +37,10 @@ describe("chord explainer: core interaction", () => {
     const keyButtons = root.querySelectorAll<HTMLButtonElement>(
       ".key-selector button",
     );
-    keyButtons[7].click(); // G (pitch class 7) — selecting a key re-selects degree I
+    const gButton = Array.from(keyButtons).find(
+      (btn) => btn.dataset.pitch === "7",
+    )!;
+    gButton.click(); // G (pitch class 7) — selecting a key re-selects degree I
 
     const active = Array.from(
       root.querySelectorAll<HTMLElement>(".piano-key.active"),

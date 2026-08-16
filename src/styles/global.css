@@ -7,11 +7,13 @@
   --accent: #2f4858;
   --accent-contrast: #fff;
   --highlight: #e8b64c;
+  --watermark: rgb(107 98 85 / 8%);
+  --watermark-on-dark: rgb(255 255 255 / 11%);
 }
 
 body {
   margin: 0;
-  padding: 2rem;
+  padding: 2rem 2rem 8rem;
   font-family: system-ui, sans-serif;
   line-height: 1.6;
   color: var(--ink);
@@ -35,6 +37,229 @@ a {
   color: var(--accent);
 }
 
+header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  margin: -2rem -2rem 0;
+  padding: 1rem 2rem;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  transition: background-color 0.3s ease;
+}
+
+header.on-dark {
+  background: var(--accent);
+}
+
+.nav-brand {
+  margin: 0;
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  transition: color 0.3s ease;
+}
+
+header.on-dark .nav-brand {
+  color: var(--accent-contrast);
+}
+
+/* Breaks the hook section out to full viewport width, same trick as the
+   sticky header, so alternating slide backgrounds can go edge-to-edge
+   instead of being confined to main's centered 40rem column. */
+.hook {
+  position: relative;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+
+/* Sticks centered in the viewport for the whole scroll through .hook,
+   then scrolls away naturally once the section ends. Anchored at
+   top: 0 rather than top: 50% deliberately — a sticky element can only
+   hold a given offset while at least that much of its container remains
+   below the current scroll position, so top: 50% was releasing (and
+   ending the pan) a half-viewport early, while the last slide's text
+   was still fully on screen. top: 0 only needs to release at the very
+   last possible instant; the extra 50vh in the transform below puts it
+   back at visual center. */
+.hook-bg {
+  position: sticky;
+  top: 0;
+  left: 50%;
+  width: 0;
+  height: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hook-bg-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  /* Always wider than the viewport by a fixed buffer (280px overhang each
+     side at rest), so the panned strip never pulls its edge into view —
+     a capped rem width looked fine on narrow screens but left visible
+     empty background on wide ones once panned. */
+  width: calc(100vw + 560px);
+  aspect-ratio: 5 / 1;
+  transform: translate(
+    calc(-50% + var(--pan-x, 0px)),
+    calc(-50% + 50vh)
+  );
+}
+
+.hook-bg-staff {
+  stroke: var(--watermark);
+  stroke-width: 1;
+  transition: stroke 0.3s ease;
+}
+
+.hook-bg-note ellipse {
+  fill: var(--watermark);
+  transition: fill 0.3s ease;
+}
+
+.hook-bg-note line {
+  stroke: var(--watermark);
+  stroke-width: 2;
+  transition: stroke 0.3s ease;
+}
+
+.hook-bg.on-dark .hook-bg-staff {
+  stroke: var(--watermark-on-dark);
+}
+
+.hook-bg.on-dark .hook-bg-note ellipse {
+  fill: var(--watermark-on-dark);
+}
+
+.hook-bg.on-dark .hook-bg-note line {
+  stroke: var(--watermark-on-dark);
+}
+
+.hook-slide {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0 2rem;
+  transition: background-color 0.2s ease;
+}
+
+/* Alternating beats, applied directly to the 2nd and 4th slide in the
+   markup — deliberately not a CSS nth-child rule, since .hook-bg (the
+   watermark) is also a sibling div at position 1, which would throw off
+   any nth-child(even) counting among "just the slides". */
+.hook-slide.alt {
+  background: var(--accent);
+
+  --ink: var(--accent-contrast);
+  --ink-muted: rgb(255 255 255 / 70%);
+}
+
+.hook-content {
+  position: relative;
+  z-index: 1;
+  max-width: 40rem;
+  width: 100%;
+  margin: 0 auto;
+  will-change: transform;
+}
+
+.hook-eyebrow {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+  margin: 0 0 0.75rem;
+}
+
+.hook-line {
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  font-size: clamp(2.25rem, 7vw, 3.75rem);
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.hook-sub {
+  font-size: 1.25rem;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  max-width: 30rem;
+  margin: 1rem 0 0;
+}
+
+.intro {
+  margin: 2.5rem 0;
+}
+
+.intro-sticky {
+  position: sticky;
+  top: 1.5rem;
+  padding: 1.25rem 1.5rem 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.intro-caption {
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  font-size: 1.25rem;
+  margin: 1rem 0 0.75rem;
+  min-height: 1.5em;
+}
+
+.intro-play {
+  margin: 0 auto;
+}
+
+.intro-steps {
+  display: flex;
+  flex-direction: column;
+}
+
+.intro-step {
+  min-height: 24vh;
+  display: flex;
+  align-items: center;
+}
+
+.intro-step p {
+  font-size: 1.375rem;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  margin: 0;
+}
+
+.intro-step strong {
+  color: var(--ink);
+}
+
+.bridge {
+  text-align: center;
+  color: var(--ink-muted);
+  font-style: italic;
+  margin: 2rem 0;
+}
+
+.bridge p {
+  margin: 0 0 1rem;
+}
+
+.bridge p:last-child {
+  margin-bottom: 0;
+}
+
 .selector-group {
   margin: 1.5rem 0;
 }
@@ -48,11 +273,21 @@ a {
   margin: 0 0 0.5rem;
 }
 
-.key-selector,
 .chord-selector {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+/* Circle of fifths: a fixed-size round container with buttons placed at
+   percentage positions computed in app.ts, so the layout stays correct at
+   any viewport without a media-query rewrite. */
+.key-selector {
+  position: relative;
+  width: 14rem;
+  max-width: 100%;
+  aspect-ratio: 1;
+  margin: 0.5rem auto 1rem;
 }
 
 .key-selector button,
@@ -60,12 +295,28 @@ a {
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--ink);
-  border-radius: 0.25rem;
-  padding: 0.5rem 0.75rem;
-  font-size: 1rem;
   font-family: inherit;
   cursor: pointer;
   transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.chord-selector button {
+  border-radius: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+}
+
+.key-selector button {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  padding: 0;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .key-selector button:hover,
@@ -136,6 +387,27 @@ a {
   letter-spacing: 0.02em;
   color: var(--ink-muted);
   margin: 0.25rem 0 0;
+}
+
+.play-chord {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+  border: 1px solid var(--accent);
+  background: var(--surface);
+  color: var(--accent);
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.875rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.play-chord:hover {
+  background: var(--accent);
+  color: var(--accent-contrast);
 }
 
 .chord-info .feel {
